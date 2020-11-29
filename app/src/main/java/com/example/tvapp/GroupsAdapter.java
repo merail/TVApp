@@ -12,10 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupsHolder> {
     private final Context context;
     private final GroupsJson[] groups;
-    private OnGroupClickListener onGroupClickListener;
+    private final OnGroupClickListener onGroupClickListener;
 
-    public GroupsAdapter(Context context, GroupsJson[] groups, OnGroupClickListener onGroupClickListener)
-    {
+    public GroupsAdapter(Context context, GroupsJson[] groups, OnGroupClickListener onGroupClickListener) {
         this.context = context;
         this.groups = groups;
         this.onGroupClickListener = onGroupClickListener;
@@ -41,8 +40,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupsHold
         return groups.length;
     }
 
-    public static class GroupsHolder extends RecyclerView.ViewHolder
-    {
+    public static class GroupsHolder extends RecyclerView.ViewHolder {
         TextView groupNameTextView;
 
         public GroupsHolder(@NonNull View itemView) {

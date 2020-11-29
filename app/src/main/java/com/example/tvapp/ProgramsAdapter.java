@@ -13,8 +13,7 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.Progra
     private final Context context;
     private final ProgramsJson[] programs;
 
-    public ProgramsAdapter(Context context, ProgramsJson[] programs)
-    {
+    public ProgramsAdapter(Context context, ProgramsJson[] programs) {
         this.context = context;
         this.programs = programs;
     }
@@ -37,9 +36,9 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.Progra
         return programs.length;
     }
 
-    public static class ProgramsHolder extends RecyclerView.ViewHolder
-    {
+    public static class ProgramsHolder extends RecyclerView.ViewHolder {
         TextView programTextView;
+
         public ProgramsHolder(@NonNull View itemView) {
             super(itemView);
 

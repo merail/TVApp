@@ -1,7 +1,6 @@
 package com.example.tvapp;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,9 @@ import com.bumptech.glide.Glide;
 public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.ChannelsHolder> {
     private final Context context;
     private final Channel[] channels;
-    private OnChannelClickListener onChannelClickListener;
+    private final OnChannelClickListener onChannelClickListener;
 
-    public ChannelsAdapter(Context context, Channel[] channels, OnChannelClickListener onChannelClickListener)
-    {
+    public ChannelsAdapter(Context context, Channel[] channels, OnChannelClickListener onChannelClickListener) {
         this.context = context;
         this.channels = channels;
         this.onChannelClickListener = onChannelClickListener;
@@ -40,8 +38,8 @@ public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.Channe
     @Override
     public void onBindViewHolder(@NonNull ChannelsHolder holder, int position) {
         Glide.with(context)
-            .load(Utils.BASE_URL + channels[position].logoUrl)
-            .into(holder.channelLogoImageView);
+                .load(Utils.BASE_URL + channels[position].logoUrl)
+                .into(holder.channelLogoImageView);
 
         holder.channelLogoImageView.setOnClickListener(view ->
         {
@@ -49,9 +47,9 @@ public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.Channe
         });
     }
 
-    public static class ChannelsHolder extends RecyclerView.ViewHolder
-    {
+    public static class ChannelsHolder extends RecyclerView.ViewHolder {
         ImageView channelLogoImageView;
+
         public ChannelsHolder(@NonNull View itemView) {
             super(itemView);
 
