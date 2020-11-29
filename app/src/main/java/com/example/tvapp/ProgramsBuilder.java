@@ -4,9 +4,9 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class GroupsBuilder {
+public class ProgramsBuilder {
 
-    public static GroupsService build() {
+    public static ProgramsService build() {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -16,6 +16,6 @@ public class GroupsBuilder {
                 .client(httpClient.build())
                 .build();
 
-        return retrofit.create(GroupsService.class);
+        return retrofit.create(ProgramsService.class);
     }
 }

@@ -6,5 +6,5 @@ import retrofit2.http.GET;
 public interface GroupsService {
 
     @GET("/tv/group/")
-    Call<GroupsJson[]> getDatabase();
+    Call<GroupsJson[]> getGroups();
 }
