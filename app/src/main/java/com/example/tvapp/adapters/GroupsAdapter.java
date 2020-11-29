@@ -1,18 +1,26 @@
-package com.example.tvapp;
+package com.example.tvapp.adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.tvapp.R;
+import com.example.tvapp.interfaces.OnGroupClickListener;
+import com.example.tvapp.server.GroupsJson;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupsHolder> {
     private final Context context;
     private final GroupsJson[] groups;
     private final OnGroupClickListener onGroupClickListener;
+
+    private int selectedPosition = -1;
 
     public GroupsAdapter(Context context, GroupsJson[] groups, OnGroupClickListener onGroupClickListener) {
         this.context = context;
@@ -28,10 +36,22 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupsHold
         return new GroupsHolder(v);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull GroupsHolder holder, int position) {
+        if (selectedPosition == position)
+            holder.groupNameTextView.setBackgroundColor(context.getColor(R.color.teal_700));
+        else
+            holder.groupNameTextView.setBackgroundColor(context.getColor(R.color.black));
+
+
         holder.groupNameTextView.setText(groups[position].name);
-        holder.groupNameTextView.setOnClickListener(view -> onGroupClickListener.onGroupClick(position));
+        holder.groupNameTextView.setOnClickListener(view -> {
+            onGroupClickListener.onGroupClick(position);
+
+            selectedPosition = position;
+            notifyDataSetChanged();
+        });
     }
 
 

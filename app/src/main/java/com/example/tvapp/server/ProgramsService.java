@@ -1,4 +1,4 @@
-package com.example.tvapp;
+package com.example.tvapp.server;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

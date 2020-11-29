@@ -1,11 +1,25 @@
 package com.example.tvapp;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.tvapp.adapters.ChannelsAdapter;
+import com.example.tvapp.adapters.GroupsAdapter;
+import com.example.tvapp.adapters.ProgramsAdapter;
+import com.example.tvapp.interfaces.OnChannelClickListener;
+import com.example.tvapp.interfaces.OnGroupClickListener;
+import com.example.tvapp.server.GroupsBuilder;
+import com.example.tvapp.server.GroupsJson;
+import com.example.tvapp.server.GroupsService;
+import com.example.tvapp.server.ProgramsBuilder;
+import com.example.tvapp.server.ProgramsJson;
+import com.example.tvapp.server.ProgramsService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -14,6 +28,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements OnGroupClickListener, OnChannelClickListener {
     private GroupsJson[] groupsJson;
 
+    private ProgressBar progressBar;
     private RecyclerView channelsRecyclerView;
     private RecyclerView programsRecyclerView;
 
@@ -21,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements OnGroupClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        progressBar = findViewById(R.id.programsProgressBar);
 
         channelsRecyclerView = findViewById(R.id.channelsRecyclerView);
         channelsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
@@ -47,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements OnGroupClickListe
                             RecyclerView.HORIZONTAL, false));
                     groupsRecyclerView.setAdapter(new GroupsAdapter(getApplicationContext(),
                             groupsJson, MainActivity.this));
+                    onGroupClick(0);
+                    onChannelClick(groupsJson[0].channels[0].id);
                 }
             }
 
@@ -73,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnGroupClickListe
                 ProgramsJson[] programsJson = response.body();
 
                 if (programsJson != null) {
+                    progressBar.setVisibility(View.GONE);
                     programsRecyclerView.setAdapter(new ProgramsAdapter(getApplicationContext(), programsJson));
                 }
             }

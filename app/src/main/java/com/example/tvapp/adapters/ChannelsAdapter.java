@@ -1,5 +1,6 @@
-package com.example.tvapp;
+package com.example.tvapp.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.tvapp.R;
+import com.example.tvapp.Utils;
+import com.example.tvapp.interfaces.OnChannelClickListener;
+import com.example.tvapp.server.Channel;
 
 public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.ChannelsHolder> {
     private final Context context;
     private final Channel[] channels;
     private final OnChannelClickListener onChannelClickListener;
+
+    private int selectedPosition = -1;
 
     public ChannelsAdapter(Context context, Channel[] channels, OnChannelClickListener onChannelClickListener) {
         this.context = context;
@@ -35,8 +42,14 @@ public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.Channe
         return channels.length;
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onBindViewHolder(@NonNull ChannelsHolder holder, int position) {
+        if (selectedPosition == position)
+            holder.channelLogoImageView.setBackgroundColor(context.getColor(R.color.teal_700));
+        else
+            holder.channelLogoImageView.setBackgroundColor(context.getColor(R.color.black));
+
         Glide.with(context)
                 .load(Utils.BASE_URL + channels[position].logoUrl)
                 .into(holder.channelLogoImageView);
@@ -44,6 +57,9 @@ public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.Channe
         holder.channelLogoImageView.setOnClickListener(view ->
         {
             onChannelClickListener.onChannelClick(channels[position].id);
+
+            selectedPosition = position;
+            notifyDataSetChanged();
         });
     }
 

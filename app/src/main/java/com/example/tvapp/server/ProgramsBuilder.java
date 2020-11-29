@@ -1,4 +1,6 @@
-package com.example.tvapp;
+package com.example.tvapp.server;
+
+import com.example.tvapp.Utils;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
