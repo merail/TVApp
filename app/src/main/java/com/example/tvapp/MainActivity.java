@@ -1,6 +1,8 @@
 package com.example.tvapp;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -8,8 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
-import com.example.tvapp.adapters.ChannelsAdapter;
+import com.example.tvapp.adapters.ChannelsViewPagerAdapter;
 import com.example.tvapp.adapters.GroupsAdapter;
 import com.example.tvapp.adapters.ProgramsAdapter;
 import com.example.tvapp.interfaces.OnChannelClickListener;
@@ -21,16 +24,22 @@ import com.example.tvapp.server.ProgramsBuilder;
 import com.example.tvapp.server.ProgramsJson;
 import com.example.tvapp.server.ProgramsService;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+@SuppressLint("ParcelCreator")
 public class MainActivity extends AppCompatActivity implements OnGroupClickListener, OnChannelClickListener {
     private GroupsJson[] groupsJson;
 
     private ProgressBar progressBar;
-    private RecyclerView channelsRecyclerView;
+    private ViewPager channelsViewPager;
+    private ChannelsViewPagerAdapter channelsViewPagerAdapter;
     private RecyclerView programsRecyclerView;
+
+    private ArrayList<ChannelsFragment> channelsFragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +48,8 @@ public class MainActivity extends AppCompatActivity implements OnGroupClickListe
 
         progressBar = findViewById(R.id.programsProgressBar);
 
-        channelsRecyclerView = findViewById(R.id.channelsRecyclerView);
-        channelsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
-                RecyclerView.HORIZONTAL, false));
+        channelsViewPager = findViewById(R.id.channelsViewPager);
+        channelsFragments = new ArrayList<>();
 
         programsRecyclerView = findViewById(R.id.programsRecyclerView);
         programsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
@@ -64,6 +72,10 @@ public class MainActivity extends AppCompatActivity implements OnGroupClickListe
                             RecyclerView.HORIZONTAL, false));
                     groupsRecyclerView.setAdapter(new GroupsAdapter(getApplicationContext(),
                             groupsJson, MainActivity.this));
+
+                    getFragments();
+                    channelsViewPagerAdapter = new ChannelsViewPagerAdapter(getSupportFragmentManager(), channelsFragments);
+                    channelsViewPager.setAdapter(channelsViewPagerAdapter);
                     onGroupClick(0);
                     onChannelClick(groupsJson[0].channels[0].id);
                 }
@@ -78,8 +90,7 @@ public class MainActivity extends AppCompatActivity implements OnGroupClickListe
 
     @Override
     public void onGroupClick(int position) {
-        channelsRecyclerView.setAdapter(new ChannelsAdapter(getApplicationContext(),
-                groupsJson[position].channels, MainActivity.this));
+        channelsViewPager.setCurrentItem(position);
     }
 
     @Override
@@ -102,5 +113,21 @@ public class MainActivity extends AppCompatActivity implements OnGroupClickListe
                 t.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
+    }
+
+    private void getFragments() {
+        for (GroupsJson groupJson : groupsJson) {
+            channelsFragments.add(ChannelsFragment.newInstance(groupJson.channels, MainActivity.this));
+        }
     }
 }

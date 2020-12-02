@@ -16,14 +16,14 @@ import com.example.tvapp.Utils;
 import com.example.tvapp.interfaces.OnChannelClickListener;
 import com.example.tvapp.server.Channel;
 
-public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.ChannelsHolder> {
+public class ChannelsRecyclerViewAdapter extends RecyclerView.Adapter<ChannelsRecyclerViewAdapter.ChannelsHolder> {
     private final Context context;
     private final Channel[] channels;
     private final OnChannelClickListener onChannelClickListener;
 
     private int selectedPosition = -1;
 
-    public ChannelsAdapter(Context context, Channel[] channels, OnChannelClickListener onChannelClickListener) {
+    public ChannelsRecyclerViewAdapter(Context context, Channel[] channels, OnChannelClickListener onChannelClickListener) {
         this.context = context;
         this.channels = channels;
         this.onChannelClickListener = onChannelClickListener;
