@@ -13,7 +13,7 @@ public class ChannelsViewPagerAdapter extends FragmentPagerAdapter {
     private final ArrayList<ChannelsFragment> channelsFragments;
 
     public ChannelsViewPagerAdapter(@NonNull FragmentManager fm, ArrayList<ChannelsFragment> channelsFragments) {
-        super(fm);
+        super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
         this.channelsFragments = channelsFragments;
     }

@@ -32,13 +32,11 @@ import retrofit2.Response;
 
 @SuppressLint("ParcelCreator")
 public class MainActivity extends AppCompatActivity implements OnGroupClickListener, OnChannelClickListener {
-    private GroupsJson[] groupsJson;
-
-    private ProgressBar progressBar;
+    public static int currentPosition;
+    private RecyclerView groupsRecyclerView;
     private ViewPager channelsViewPager;
-    private ChannelsViewPagerAdapter channelsViewPagerAdapter;
+    private ProgressBar progressBar;
     private RecyclerView programsRecyclerView;
-
     private ArrayList<ChannelsFragment> channelsFragments;
 
     @Override
@@ -46,10 +44,14 @@ public class MainActivity extends AppCompatActivity implements OnGroupClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressBar = findViewById(R.id.programsProgressBar);
+        groupsRecyclerView = findViewById(R.id.groupsRecyclerView);
+        groupsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
+                RecyclerView.HORIZONTAL, false));
 
         channelsViewPager = findViewById(R.id.channelsViewPager);
         channelsFragments = new ArrayList<>();
+
+        progressBar = findViewById(R.id.programsProgressBar);
 
         programsRecyclerView = findViewById(R.id.programsRecyclerView);
         programsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
@@ -64,21 +66,10 @@ public class MainActivity extends AppCompatActivity implements OnGroupClickListe
         groupsService.getGroups().enqueue(new Callback<GroupsJson[]>() {
             @Override
             public void onResponse(@NonNull Call<GroupsJson[]> call, @NonNull Response<GroupsJson[]> response) {
-                groupsJson = response.body();
+                GroupsJson[] groupsJson = response.body();
 
-                if (groupsJson != null) {
-                    RecyclerView groupsRecyclerView = findViewById(R.id.groupsRecyclerView);
-                    groupsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
-                            RecyclerView.HORIZONTAL, false));
-                    groupsRecyclerView.setAdapter(new GroupsAdapter(getApplicationContext(),
-                            groupsJson, MainActivity.this));
-
-                    getFragments();
-                    channelsViewPagerAdapter = new ChannelsViewPagerAdapter(getSupportFragmentManager(), channelsFragments);
-                    channelsViewPager.setAdapter(channelsViewPagerAdapter);
-                    onGroupClick(0);
-                    onChannelClick(groupsJson[0].channels[0].id);
-                }
+                if (groupsJson != null)
+                    setLists(groupsJson);
             }
 
             @Override
@@ -125,9 +116,41 @@ public class MainActivity extends AppCompatActivity implements OnGroupClickListe
 
     }
 
-    private void getFragments() {
+    private void getFragments(GroupsJson[] groupsJson) {
         for (GroupsJson groupJson : groupsJson) {
             channelsFragments.add(ChannelsFragment.newInstance(groupJson.channels, MainActivity.this));
         }
+    }
+
+    private void setLists(GroupsJson[] groupsJson) {
+        GroupsAdapter groupsAdapter = new GroupsAdapter(getApplicationContext(),
+                groupsJson, MainActivity.this);
+        groupsRecyclerView.setAdapter(groupsAdapter);
+
+        getFragments(groupsJson);
+
+        channelsViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentPosition = position;
+                groupsAdapter.onChangePosition();
+                groupsRecyclerView.scrollToPosition(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        channelsViewPager.setAdapter(new ChannelsViewPagerAdapter(getSupportFragmentManager(), channelsFragments));
+
+        onGroupClick(0);
+        onChannelClick(groupsJson[0].channels[0].id);
     }
 }
